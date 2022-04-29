@@ -6,7 +6,7 @@
 /*   By: edrodrig <edrodrig@student.42sp.org.b      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/27 18:15:55 by edrodrig          #+#    #+#             */
-/*   Updated: 2022/04/27 19:12:13 by edrodrig         ###   ########.fr       */
+/*   Updated: 2022/04/29 12:27:30 by edrodrig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,19 +16,51 @@
 #include <unistd.h>
 #include <sys/wait.h>
 
+int ft_strlen(char *str)
+{
+	int count;
+
+	if (str == NULL)
+		return 0;
+
+	count = 0;
+	while(*str++)
+		count++;
+	return count;
+}
+
+char *ft_strcat(char *path, char *command)
+{
+
+	char *fullPath = (char*)malloc(sizeof(char)*(ft_strlen(path)+ft_strlen(command)));
+	size_t i;
+
+
+	if (fullPath == NULL)
+		return 0;
+
+	i = 0;
+	while(*path)
+		fullPath[i++] = *path++;
+	while(*command)
+		fullPath[i++] = *command++;
+	return fullPath;
+}
+
 int main(int argc, char* argv[])
 {
+	char *firstComand;
+	char *argVec[] = {"ping","-c","5","gooogle.com", (char*)0};
+
+	firstComand = ft_strcat("/usr/bin/",argv[1]);
+	printf("%s", firstComand);
 	int fd[2];
 	if (pipe(fd) == -1)
-	{
 		return 1;
-	}
 
 	int pid1 = fork();
 	if (pid1 < 0)
-	{
 		return 2;
-	}
 
 	if (pid1 == 0)
 	{
@@ -36,7 +68,9 @@ int main(int argc, char* argv[])
 		dup2(fd[1], STDOUT_FILENO);
 		close(fd[0]);
 		close(fd[1]);
-		execlp("ping", "ping", "-c", "5", "gooogle.com", NULL);
+
+		if (execve(firstComand, argVec, NULL) == -1)
+			perror("Could not execute execve");
 	}
 
 	int pid2 = fork();
@@ -60,5 +94,7 @@ int main(int argc, char* argv[])
 	waitpid(pid1, NULL, 0);
 	waitpid(pid2, NULL, 0);
 
+
+	free(firstComand);
 	return 0;
 }
