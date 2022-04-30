@@ -6,7 +6,7 @@
 /*   By: edrodrig <edrodrig@student.42sp.org.b      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/27 18:15:55 by edrodrig          #+#    #+#             */
-/*   Updated: 2022/04/29 16:13:31 by edrodrig         ###   ########.fr       */
+/*   Updated: 2022/04/30 06:17:40 by edrodrig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,51 +17,31 @@
 #include <fcntl.h>
 #include <sys/wait.h>
 
-int ft_strlen(char *str)
-{
-	int count;
-
-	if (str == NULL)
-		return 0;
-
-	count = 0;
-	while(*str++)
-		count++;
-	return count;
-}
-
-char *ft_strcat(char *path, char *command)
-{
-
-	char *fullPath = (char*)malloc(sizeof(char)*(ft_strlen(path)+ft_strlen(command)));
-	size_t i;
-
-
-	if (fullPath == NULL)
-		return 0;
-
-	i = 0;
-	while(*path)
-		fullPath[i++] = *path++;
-	while(*command)
-		fullPath[i++] = *command++;
-	return fullPath;
-}
+char	**ft_split(char const *s, char c);
+int ft_strlen(char *str);
+char *ft_strcat(char *path, char *command);
 
 int main(int argc, char* argv[])
 {
 	char *firstComand;
 	char *secondComand;
-	char *argVec[] = {argv[2],"-c","5","gooogle.com", (char*)0};
+	char **split;
+	char *argVec[] = {argv[2],"-c","5","www.google.com", (char*)0};
 	char *argVec2[] = {argv[3],"rtt", (char*)0};
 	int fd_out;
 	int fd_in;
+
+
+	split = ft_split(argv[2], ' ');
 
 	fd_in = open(argv[1], O_RDONLY);
 	fd_out = open(argv[4],O_WRONLY);
 	firstComand = ft_strcat("/usr/bin/",argv[2]);
 	secondComand = ft_strcat("/usr/bin/",argv[3]);
-	printf("%s", firstComand);
+
+	printf("%d", argc);
+	printf("\n%s", split[0]);
+
 	int fd[2];
 	if (pipe(fd) == -1)
 		return 1;
@@ -111,5 +91,7 @@ int main(int argc, char* argv[])
 
 
 	free(firstComand);
+	free(secondComand);
+	free(split);
 	return 0;
 }
