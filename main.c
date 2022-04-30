@@ -6,7 +6,7 @@
 /*   By: edrodrig <edrodrig@student.42sp.org.b      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/27 18:15:55 by edrodrig          #+#    #+#             */
-/*   Updated: 2022/04/30 06:17:40 by edrodrig         ###   ########.fr       */
+/*   Updated: 2022/04/30 06:44:17 by edrodrig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,22 +25,23 @@ int main(int argc, char* argv[])
 {
 	char *firstComand;
 	char *secondComand;
-	char **split;
-	char *argVec[] = {argv[2],"-c","5","www.google.com", (char*)0};
-	char *argVec2[] = {argv[3],"rtt", (char*)0};
+//	char **split;
+	char **argVec; //= {argv[2],"-c","5","www.google.com", (char*)0};
+	char **argVec2;
 	int fd_out;
 	int fd_in;
 
 
-	split = ft_split(argv[2], ' ');
+	argVec = ft_split(argv[2], ' ');
+	argVec2 = ft_split(argv[3], ' ');
+
 
 	fd_in = open(argv[1], O_RDONLY);
 	fd_out = open(argv[4],O_WRONLY);
-	firstComand = ft_strcat("/usr/bin/",argv[2]);
-	secondComand = ft_strcat("/usr/bin/",argv[3]);
 
-	printf("%d", argc);
-	printf("\n%s", split[0]);
+	firstComand = ft_strcat("/usr/bin/",argVec[0]);
+	secondComand = ft_strcat("/usr/bin/",argVec2[0]);
+
 
 	int fd[2];
 	if (pipe(fd) == -1)
@@ -92,6 +93,7 @@ int main(int argc, char* argv[])
 
 	free(firstComand);
 	free(secondComand);
-	free(split);
+	free(argVec);
+	free(argVec2);
 	return 0;
 }
