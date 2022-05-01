@@ -16,6 +16,10 @@ SRC_FILES = pipex.c\
 	ft_strlen.c\
 	ft_strcat.c\
 	ft_strlcpy.c\
+	ft_strnstr.c\
+	ft_strjoin.c\
+	ft_paths.c\
+	error.c\
 
 SRC = $(addprefix $(SRC_DIR)/, $(SRC_FILES))
 OBJ = $(SRC:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
@@ -48,4 +52,3 @@ test: all
 val: all
 	make re
 	valgrind --track-origins=yes --leak-check=full -s ./$(NAME) infile "grep igor" "tr ' ' %" outfile
-
