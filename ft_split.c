@@ -1,5 +1,9 @@
 #include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 
+
+char **ft_split2(char *string, char *seperators, int *count);
 
 int ft_strlen(const char *str)
 {
@@ -48,115 +52,84 @@ size_t	ft_strlcpy(char *dst, const char *src, size_t size)
 	return (len_src);
 }
 
-static void	*ft_memcpy(void *dest, const void *src, size_t n)
+char	*ft_strchr(const char *str, int c)
 {
-	unsigned char	*dest_cast;
-	unsigned char	*src_cast;
+	unsigned char ch;
 
-	dest_cast = (unsigned char *)dest;
-	src_cast = (unsigned char *)src;
-	while (n--)
-		*dest_cast++ = *src_cast++;
-	return (dest);
+	ch = c;
+	while (*str != '\0')
+    {
+          if ((unsigned char)*str == ch)
+			  return ((char*)str);
+          str++;
+    }
+    return (NULL);
 }
 
-static char	*ft_strdup(const char *s)
+char **ft_split2(char *string, char *seperators, int *count)
 {
-	char	*n;
+	int len = ft_strlen(string);
 
-	n = malloc((ft_strlen(s) + 1) * sizeof(char));
-	if (n == NULL)
-		return (NULL);
-	ft_memcpy(n, s, ft_strlen(s) + 1);
-	return (n);
-}
+	*count = 0;
 
-char	*ft_substr(char const *s, unsigned int start, size_t len)
-{
-	char	*n;
-	size_t	new_len;
-
-	if (s == NULL)
-		return (NULL);
-	if ((unsigned int)ft_strlen(s) < start)
-		return (ft_strdup(""));
-	new_len = ft_strlen(s + start);
-	if (new_len < len)
-		len = new_len;
-	n = malloc((len + 1) * sizeof(char));
-	if (n == NULL)
-		return (NULL);
-	ft_strlcpy(n, s + start, len + 1);
-	return (n);
-}
-
-static char	*ft_strchr(const char *str, int c)
-{
-	while (*str != (char)c)
-		if (*str++ == '\0')
-			return (NULL);
-	return ((char *)str);
-}
-
-static int	count_words(char const *s, char c)
-{
-	size_t	word_count;
-	size_t	skipper;
-
-	word_count = 0;
-	skipper = 1;
-	while (*s)
+	int i = 0;
+	while (i < len)
 	{
-		if (*s != c && skipper)
+		while (i < len)
 		{
-			skipper = 0;
-			word_count++;
+			if (ft_strchr(seperators,string[i]) == NULL)
+				break;
+			i++;
 		}
-		else if (*s++ == c)
-			skipper = 1;
+
+		int old_i = i;
+		while(i < len)
+		{
+			if (ft_strchr(seperators,string[i]) != NULL)
+				break;
+			i++;
+		}
+
+		if (i > old_i)
+			*count = *count + 1;
 	}
-	return (word_count);
-}
 
-static char const	*skip_equal_chars(char const *s, char c)
-{
-	while (*s && *s == c)
-		s++;
-	return (s);
-}
+	char **strings = malloc(sizeof(char *) * *count);
 
-static void	create_words(
-	char	**words, char const *s, char c, size_t word_count)
-{
-	char	*pointerator;
-
-	s = skip_equal_chars(s, c);
-	while (word_count--)
+	i = 0;
+	int string_index = 0;
+	char buffer[21341];
+	while (i < len)
 	{
-		pointerator = ft_strchr(s, c);
-		if (pointerator != NULL)
+		while (i < len)
 		{
-			*words = ft_substr(s, 0, pointerator - s);
-			s = skip_equal_chars(pointerator, c);
+			if (ft_strchr(seperators, string[i]) == NULL)
+				break;
+			i++;
 		}
-		else
-			*words = ft_substr(s, 0, ft_strlen(s) + 1);
-		words++;
-	}
-	*words = NULL;
+
+		int j = 0;
+		while(i < len)
+		{
+			if (ft_strchr(seperators, string[i]) != NULL)
+				break;
+
+			buffer[j] = string[i];
+			i++;
+			j++;
+		}
+
+		if (j > 0)
+		{
+			buffer[j] = '\0';
+
+			int to_allocate;
+
+			to_allocate = sizeof(char) * (ft_strlen(buffer) + 1);
+			strings[string_index] = malloc(to_allocate);
+			strcpy(strings[string_index], buffer);
+			string_index++;
+		}
 }
-
-char	**ft_split(char const *s, char c)
-{
-	size_t	word_count;
-	char	**words;
-
-	if (s == NULL)
-		return (NULL);
-	word_count = count_words(s, c);
-	words = malloc(sizeof(char **) * (word_count + 1));
-	if (words == NULL)
-		return (NULL);
-	create_words(words, s, c, word_count);
-	return (words);
+return strings;
 }

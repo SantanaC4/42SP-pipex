@@ -6,7 +6,7 @@
 /*   By: edrodrig <edrodrig@student.42sp.org.b      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/27 18:15:55 by edrodrig          #+#    #+#             */
-/*   Updated: 2022/04/30 06:44:17 by edrodrig         ###   ########.fr       */
+/*   Updated: 2022/04/30 23:54:04 by edrodrig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 #include <sys/wait.h>
 
 char	**ft_split(char const *s, char c);
+char **ft_split2(char *string, char *seperators, int *count);
 int ft_strlen(char *str);
 char *ft_strcat(char *path, char *command);
 
@@ -25,6 +26,7 @@ int main(int argc, char* argv[])
 {
 	char *firstComand;
 	char *secondComand;
+	int count_strings = 0;
 //	char **split;
 	char **argVec; //= {argv[2],"-c","5","www.google.com", (char*)0};
 	char **argVec2;
@@ -32,8 +34,8 @@ int main(int argc, char* argv[])
 	int fd_in;
 
 
-	argVec = ft_split(argv[2], ' ');
-	argVec2 = ft_split(argv[3], ' ');
+	argVec = ft_split2(argv[2]," ",&count_strings);
+	argVec2 = ft_split2(argv[3]," ",&count_strings);
 
 
 	fd_in = open(argv[1], O_RDONLY);
