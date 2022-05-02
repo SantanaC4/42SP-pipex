@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strjoin.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: edrodrig <edrodrig@student.42sp.org.b      +#+  +:+       +#+        */
+/*   By: vcastilh <vcastilh@student.42sp.org.br>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/05/01 16:13:09 by edrodrig          #+#    #+#             */
-/*   Updated: 2022/05/01 16:13:38 by edrodrig         ###   ########.fr       */
+/*   Created: 2021/09/01 07:30:15 by vcastilh          #+#    #+#             */
+/*   Updated: 2022/05/01 22:37:21 by edrodrig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,29 +14,18 @@
 
 char	*ft_strjoin(char const *s1, char const *s2)
 {
-	char	*res;
-	int		i;
-	int		k;
+	char	*ccat;
+	int		len_s1;
+	int		len_s2;
 
 	if (!s1 || !s2)
-		return ((void *)0);
-	i = 0;
-	res = malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 1));
-	if (res == (void *)0 || !s1 || !s2)
-		return ((void *)0);
-	while (s1[i])
-	{
-		res[i] = s1[i];
-		i++;
-	}
-	k = 0;
-	while (s2[k])
-	{
-		res[i] = s2[k];
-		i++;
-		k++;
-	}
-	res[i] = '\0';
-	return (res);
+		return (NULL);
+	len_s1 = (ft_strlen((char *)s1));
+	len_s2 = (ft_strlen((char *)s2));
+	ccat = (char *)malloc((len_s1 + len_s2 + 1) * sizeof(char));
+	if (ccat == NULL)
+		return (NULL);
+	ft_strlcpy(&ccat[0], s1, len_s1 + 1);
+	ft_strlcpy(&ccat[len_s1], s2, len_s2 + 1);
+	return (ccat);
 }
-

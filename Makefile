@@ -19,6 +19,7 @@ SRC_FILES = pipex.c\
 	ft_strnstr.c\
 	ft_strjoin.c\
 	ft_paths.c\
+	ft_strlcat.c\
 	error.c\
 
 SRC = $(addprefix $(SRC_DIR)/, $(SRC_FILES))

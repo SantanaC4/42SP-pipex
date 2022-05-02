@@ -6,76 +6,97 @@
 /*   By: edrodrig <edrodrig@student.42sp.org.b      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/01 02:01:27 by edrodrig          #+#    #+#             */
-/*   Updated: 2022/05/01 02:19:47 by edrodrig         ###   ########.fr       */
+/*   Updated: 2022/05/01 22:55:38 by edrodrig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-char **ft_split(char *string, char *seperators, int *count)
+static char	*ft_substr(char const *s, unsigned int start, size_t len)
 {
-	int len = ft_strlen(string);
+	char		*res;
+	size_t		i;
 
-	*count = 0;
-
-	int i = 0;
-	while (i < len)
-	{
-		while (i < len)
-		{
-			if (ft_strchr(seperators,string[i]) == NULL)
-				break;
-			i++;
-		}
-
-		int old_i = i;
-		while(i < len)
-		{
-			if (ft_strchr(seperators,string[i]) != NULL)
-				break;
-			i++;
-		}
-
-		if (i > old_i)
-			*count = *count + 1;
-	}
-
-	char **strings = malloc(sizeof(char *) * *count);
-
+	if (!s)
+		return ((void *)0);
+	if (len > ft_strlen(s) - start)
+		len = ft_strlen(s) - start;
 	i = 0;
-	int string_index = 0;
-	char buffer[21341];
+	res = malloc(sizeof(char) * (len + 1));
+	if (res == (void *)0)
+		return ((void *)0);
 	while (i < len)
 	{
-		while (i < len)
-		{
-			if (ft_strchr(seperators, string[i]) == NULL)
-				break;
-			i++;
-		}
-
-		int j = 0;
-		while(i < len)
-		{
-			if (ft_strchr(seperators, string[i]) != NULL)
-				break;
-
-			buffer[j] = string[i];
-			i++;
-			j++;
-		}
-
-		if (j > 0)
-		{
-			buffer[j] = '\0';
-
-			int to_allocate;
-
-			to_allocate = sizeof(char) * (ft_strlen(buffer) + 1);
-			strings[string_index] = malloc(to_allocate);
-			strcpy(strings[string_index], buffer);
-			string_index++;
-		}
+		if (s[start + i] != '\0' && start < ft_strlen(s))
+			res[i] = s[start + i];
+		else
+			res[i] = '\0';
+		i++;
+	}
+	res[i] = '\0';
+	return (res);
 }
-return strings;
+
+static int	count_words(char const *s, char c)
+{
+	size_t	word_count;
+	size_t	skipper;
+
+	word_count = 0;
+	skipper = 1;
+	while (*s)
+	{
+		if (*s != c && skipper)
+		{
+			skipper = 0;
+			word_count++;
+		}
+		else if (*s++ == c)
+			skipper = 1;
+	}
+	return (word_count);
+}
+
+static char const	*skip_equal_chars(char const *s, char c)
+{
+	while (*s && *s == c)
+		s++;
+	return (s);
+}
+
+static void	create_words(
+	char	**words, char const *s, char c, size_t word_count)
+{
+	char	*pointerator;
+
+	s = skip_equal_chars(s, c);
+	while (word_count--)
+	{
+		pointerator = ft_strchr(s, c);
+		if (pointerator != NULL)
+		{
+			*words = ft_substr(s, 0, pointerator - s);
+			s = skip_equal_chars(pointerator, c);
+		}
+		else
+			*words = ft_substr(s, 0, ft_strlen(s) + 1);
+		words++;
+	}
+	*words = (void*)0;
+}
+
+char	**ft_split(char const *s, char c, size_t *count)
+{
+	size_t	word_count;
+	char	**words;
+
+	if (s == NULL)
+		return (NULL);
+	word_count = count_words(s, c);
+	*count = word_count;
+	words = malloc(sizeof(char **) * (word_count + 1));
+	if (words == NULL)
+		return (NULL);
+	create_words(words, s, c, word_count);
+	return (words);
 }

@@ -6,7 +6,7 @@
 /*   By: edrodrig <edrodrig@student.42sp.org.b      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/01 02:31:37 by edrodrig          #+#    #+#             */
-/*   Updated: 2022/05/01 17:22:21 by edrodrig         ###   ########.fr       */
+/*   Updated: 2022/05/02 10:24:20 by edrodrig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,8 @@ int main(int argc, char* argv[], char *envp[])
 {
 	char *firstComand;
 	char *secondComand;
-	int count_strings = 0;
-	int count_strings2 = 0;
+	size_t count_strings = 0;
+	size_t count_strings2 = 0;
 	char **argVec; //= {argv[2],"-c","5","www.google.com", (char*)0};
 	char **argVec2;
 	int fd_out;
@@ -29,8 +29,8 @@ int main(int argc, char* argv[], char *envp[])
 		return (0);
 	}
 
-	argVec = ft_split(argv[2]," ",&count_strings);
-	argVec2 = ft_split(argv[3]," ",&count_strings2);
+	argVec = ft_split(argv[2],' ',&count_strings);
+	argVec2 = ft_split(argv[3],' ',&count_strings2);
 
 	if (!access(argv[1], F_OK) && access(argv[1], W_OK))
 		error_premission();
@@ -46,20 +46,7 @@ int main(int argc, char* argv[], char *envp[])
 
 	firstComand = ft_paths(argVec[0], envp);
 	secondComand = ft_paths(argVec2[0], envp);
-
-	int k;
-
-	k = 0;
-	while (envp[k] != NULL)
-	{
-		if (ft_strnstr(envp[k], "PATH", 4) != 0)
-		{
-			printf("%s\n",envp[k]);
-			break;
-		}
-		k++;
-	}
-
+	printf("%s", envp[0]);
 
 	int fd[2];
 	if (pipe(fd) == -1)
@@ -78,16 +65,14 @@ int main(int argc, char* argv[], char *envp[])
 		close(fd[0]);
 		close(fd[1]);
 
-		if (execve(firstComand, argVec, NULL) == -1)
+		if (execve(firstComand, argVec, envp) == -1)
 			perror("Could not execute execve");
 	}
 
 
 	int pid2 = fork();
 	if (pid2 < 0)
-	{
 		return 3;
-	}
 
 	if (pid2 == 0)
 	{
@@ -98,7 +83,7 @@ int main(int argc, char* argv[], char *envp[])
 		close(fd[0]);
 		close(fd[1]);
 
-		if (execve(secondComand, argVec2, NULL) == -1)
+		if (execve(secondComand, argVec2, envp) == -1)
 			perror("Could not execute execve");
 	}
 
@@ -108,7 +93,7 @@ int main(int argc, char* argv[], char *envp[])
 	waitpid(pid1, NULL, 0);
 	waitpid(pid2, NULL, 0);
 
-	int i = 0;
+	size_t i = 0;
 	while(i < count_strings)
 	   free(argVec[i++]);
 	i = 0;
@@ -119,5 +104,5 @@ int main(int argc, char* argv[], char *envp[])
 	free(secondComand);
 	free(argVec);
 	free(argVec2);
-	return 0;
+	return (0);
 }
