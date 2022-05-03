@@ -5,13 +5,14 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: edrodrig <edrodrig@student.42sp.org.b      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/05/01 14:17:49 by edrodrig          #+#    #+#             */
-/*   Updated: 2022/05/01 15:33:01 by edrodrig         ###   ########.fr       */
+/*   Created: 2022/05/02 11:26:22 by edrodrig          #+#    #+#             */
+/*   Updated: 2022/05/02 11:26:39 by edrodrig         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
+#include "pipex.h"
 
 void	error_cmd(void)
 {
